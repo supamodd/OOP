@@ -1,4 +1,5 @@
 ﻿#include<iostream>
+#include<cmath>
 using namespace std;
 using std::cout;
 
@@ -39,7 +40,7 @@ public:
 		this->y = 0;
 		cout << "Constructor:\t\t" << this << endl;
 	}*/
-	Point(double x=0, double y=0)
+	Point(double x = 0, double y = 0)
 	{
 		this->x = x;
 		this->y = y;
@@ -55,8 +56,21 @@ public:
 	{
 		cout << "\tX = " << get_x() << "\tY = " << get_y() << endl;
 	}
+	double distance(const Point& other) const 
+	{
+		double dx = x - other.x;
+		double dy = y - other.y;
+		return sqrt(dx * dx + dy * dy);
+	}
 };
 
+double distance(const Point& p1, const Point& p2)
+{
+	double dx = p1.get_x() - p2.get_x();
+	double dy = p1.get_y() - p2.get_y();
+
+	return sqrt(dx * dx + dy * dy);
+}
 //#define STRUCT_POINT
 //#define OBJECT_LIFETIME
 void main()
@@ -72,9 +86,9 @@ void main()
 	cout << A.x << "\t" << A.y << endl;
 
 	Point* pA = &A;
-	cout << pA->x << "\t" << pA->y << endl;	
+	cout << pA->x << "\t" << pA->y << endl;
 #endif STRUCT_POINT
-	Point A;		//Здесь неявно вызывается
+	Point A = 3;		//Здесь неявно вызывается
 	//A.set_x(6);
 	//A.set_y(7);
 	//cout << A.get_x() << "\t" << A.get_y() << endl;
@@ -87,6 +101,10 @@ void main()
 	Point C(7, 8);
 	C.print();
 
+	cout << "Расстояние от А до Б (метод): " << A.distance(B) << endl;
+
+	cout << "Расстояние между А и Б (функция): " << distance(A, B) << endl;
+
 #ifdef OBJECT_LIFETIME
 	for (int i = 0; i < 10; i++)
 	{
@@ -95,6 +113,7 @@ void main()
 	cout << endl;
 #endif // OBJECT_LIFETIME
 }
+
 
 /*
 -------------------------------------------------------------------------------
@@ -131,7 +150,7 @@ get-методы обязательно должны быть константн
 Constructor - это метод, который создает обьект.
 	- По умолчанию - это конструктор, который может быть вызван без параментров;
 	Это может быть констурктор не принимающий никаких параметров, или конструктор,
-	каждый параметр которого... 
+	каждый параметр которого...
 	Если в классе не написать ни одного конструктора, то компилятор добавит неявный
 	конструктор по умолчанию. Потому что без конструктора не возможно создать обьект,
 	такой неявный конструктор по умолчанию выделяет память под обьект и инициализирует
