@@ -3,6 +3,7 @@
 using namespace std;
 using std::cout;
 
+#define delimiter "\n-----------------------------------------------------"
 
 class Point
 {
@@ -50,29 +51,54 @@ public:
 	{
 		cout << "Destructor:\t\t" << this << endl;
 	}
+	Point(const Point& other)
+	{
+		this->x = other.x;
+		this->y = other.y;
+		cout << "CopyConstructor:\t" << this << endl;
+	}
+
+	//				Operators:
+	void operator=(const Point& other)
+	{
+		this->x = other.x;
+		this->y = other.y;
+		cout << "CopyAssignment:\t\t" << this << endl;
+	}
+
 
 	//				Methods:
 	void print()const
 	{
 		cout << "\tX = " << get_x() << "\tY = " << get_y() << endl;
 	}
-	double distance(const Point& other) const 
+	double distance(const Point& other) const
 	{
 		double dx = x - other.x;
 		double dy = y - other.y;
 		return sqrt(dx * dx + dy * dy);
 	}
+	//double distance(Point other)
+	//{
+	//	double x_distance = this->x - other.x;
+	//	double y_distance = this->y - other.y;
+	//	double distance = sqrt(x_distance * x_distance + y_distance * y_distance);
+	//	return distance;
+	//}
 };
 
-double distance(const Point& p1, const Point& p2)
+double distance(const Point& A, const Point& B)
 {
-	double dx = p1.get_x() - p2.get_x();
-	double dy = p1.get_y() - p2.get_y();
+	double dx = A.get_x() - B.get_x();
+	double dy = A.get_y() - B.get_y();
 
 	return sqrt(dx * dx + dy * dy);
 }
 //#define STRUCT_POINT
 //#define OBJECT_LIFETIME
+//#define DISTANCE_CHECK
+//#define CONSTRUCTORS_CHECK
+#define ASSIGNMENT_CHECK
 void main()
 {
 	setlocale(LC_ALL, "");
@@ -88,6 +114,35 @@ void main()
 	Point* pA = &A;
 	cout << pA->x << "\t" << pA->y << endl;
 #endif STRUCT_POINT
+
+#ifdef OBJECT_LIFETIME
+	for (int i = 0; i < 10; i++)
+	{
+		cout << i << "\t";
+	}
+	cout << endl;
+#endif  OBJECT_LIFETIME
+
+#ifdef DISTANCE_CHECK
+	Point A(2, 3);
+	Point B(7, 8);
+	A.print();
+	B.print();
+
+	cout << delimiter << endl;
+	cout << "Расстояние от А до B (метод): " << A.distance(B) << endl;
+	cout << delimiter << endl;
+	cout << "Расстояние от B до A (метод): " << B.distance(A) << endl;
+	cout << delimiter << endl;
+	cout << "Расстояние между А и B (функция): " << distance(A, B) << endl;
+	cout << delimiter << endl;
+	cout << "Расстояние между B и A (функция): " << distance(B, A) << endl;
+	cout << delimiter << endl;
+#endif  DISTANCE_CHECK
+
+#ifdef CONSTRUCTORS_CHECK
+
+
 	Point A = 3;		//Здесь неявно вызывается
 	//A.set_x(6);
 	//A.set_y(7);
@@ -101,17 +156,30 @@ void main()
 	Point C(7, 8);
 	C.print();
 
-	cout << "Расстояние от А до Б (метод): " << A.distance(B) << endl;
+	Point D = C;	//CopyConstructor
+	D.print();
 
-	cout << "Расстояние между А и Б (функция): " << distance(A, B) << endl;
+	Point E;		//Default constructor
+	E = D;			//CopyAssignment
+	E.print();
+#endif CONSTRUCTORS_CHECK
 
-#ifdef OBJECT_LIFETIME
-	for (int i = 0; i < 10; i++)
-	{
-		cout << i << "\t";
-	}
-	cout << endl;
-#endif // OBJECT_LIFETIME
+	int a, b, c;
+	a = b = c = 0;
+	cout << a << "\t" << b << "\t" << c << endl;
+
+	//Point(2, 3); //Здесь мы явно вызываем конструктор, и таким образом создаем временный безымянный обьект
+	cout << Point(2, 3).distance(Point(7, 8)) << endl;
+	//Временные безымянные обьекты существуют только в пределах одного выражения,
+	//они удаляются из памяти, после выражения
+
+	Point A, B, C;
+	
+	A = B = C = Point(2, 3);
+
+	A.print();
+	B.print();
+	C.print();
 }
 
 
@@ -164,6 +232,38 @@ Constructor - это метод, который создает обьект.
 ~Destructor	- это метод, который уничтожает обьект по завершениии его времени жизни;
 Оператор присваивания(AssignmentOperator;
 -------------------------------------------------------------------------------
-
+Параметризованный конструктор может стать по умолчанию, если добавить ему дефолтные параметры
 -------------------------------------------------------------------------------
+						КОНСТРУКТОР КОПИРОВАНИЯ
+Конструктор который копирует обьект, то есть создаваемый обьект, делает точной
+копией существующего обьекта. Как и другой конструктор он выделяет память и инициализирует эту выделенную память
+значениями полей существующего обьекта.
+Конструктор копирования всегда принимает константную ссылку на обьект.
+Конструктор копирования может быть не явным, то есть если его не написать, то компилятор сам его добавит.
+Этот не явным конструктор копирования скопирует значения всех полей из существующего обьекта(other) в 
+создаваемый(this)
+Для того чтобы удалить из класса не явный конструктор копирования, используется модификатор "delete"
+-------------------------------------------------------------------------------
+						Оператор присваивания(AssignmentOperator)
+Это метод который существующий обьект делает точной копией другого существующего обьекта, а именно:
+Удаляет все содержимое того обьекта для которого он вызван и заменяет его содержимым другого обьекта.
+Фактически этот оператор делает тоже самое что и конструктор копирования, но не для создаваемого, а для
+существующего обьекта
+-------------------------------------------------------------------------------
+Не перегружаются:
+?:	- conditional Ternary oreator;
+::	- Оператор разрешения видимости;
+.   - Оператор прямого доступа;
+.*	- Pointer to member selection;
+#	- Preprocessor convert to string;
+##	- Preprocessor concatenate;
+-------------------------------------------------------------------------------
+Перегруженные операторы - это самые обычные функции, имя которых состоит из ключевого слова:
+	operator@
+
+Операторы можно перегружать как в классе, так и за ним.
+Если оператор перегружен в классе, то он является методом, и следовательно может быть вызван только
+для какого-то обьекта, если опер. перегружен за классом, то он явл. самой обычной функцией.
+Если унарный оператор перегружен в классе, то он никогда не принимает никаких параметров,
+а его единственным операндом явл... 
 */
