@@ -6,15 +6,17 @@ using namespace std;
 
 class Fraction 
 {
-private:
+//private:
+
+public:
     int numerator;    // Числитель
     int denominator;  // Знаменатель
 
-    int gcd(int a, int b) 
+    int gcd(int a, int b)
     {
         a = abs(a);
         b = abs(b);
-        while (b != 0) 
+        while (b != 0)
         {
             int temp = b;
             b = a % b;
@@ -24,19 +26,19 @@ private:
     }
     void reduce()
     {
-        int common = gcd(numerator, denominator); 
+        int common = gcd(numerator, denominator);
         numerator /= common;
         denominator /= common;
 
-        if (denominator < 0) 
-        { 
+        if (denominator < 0)
+        {
             numerator = -numerator;
             denominator = -denominator;
         }
     }
 
-public:
-                                                                                 // Конструкторы
+
+    // Конструкторы
 
     Fraction(int num = 0, int den = 1) : numerator(num), denominator(den) 
     {
