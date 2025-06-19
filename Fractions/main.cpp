@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <numeric>
 #include <algorithm>
+#include <string>
 
 using namespace std;
 
@@ -185,18 +186,100 @@ public:
     }
 
     
-    friend ostream& operator<<(ostream& os, const Fraction& fraction)
+    friend istream& operator>>(istream& is, Fraction& fraction)
+    {
+        char slash;
+        is >> fraction.numerator >> slash >> fraction.denominator;
+        if (fraction.denominator == 0)
+        {
+            fraction.denominator = 1;
+        }
+        fraction.reduce();
+        return is;
+    }
+
+    friend ostream& operator<<(ostream& os, const Fraction& fraction) 
     {
         os << fraction.numerator << "/" << fraction.denominator;
         return os;
     }
 };
 
+class String
+{
+//private:
+   
+
+public:
+    char* data;
+    size_t length;
+                                    // Конструкторы
+    String() : data(nullptr), length(0) {}
+    String(const char* str)
+    {
+        length = strlen(str);
+        data = new char[length + 1];
+        strcpy_s(data, length + 1, str);
+    }
+
+    String(const String& other)
+    {
+        length = other.length;
+        data = new char[length + 1];
+        strcpy_s(data, length + 1, other.data);
+    }
+
+                                // ДЕКонструктор
+    ~String()
+    {
+        delete[] data;
+    }
+
+                                                     // Оператор присваивания
+    String& operator=(const String& other)
+    {
+        if (this != &other)
+        {
+            delete[] data;
+            length = other.length;
+            data = new char[length + 1];
+            strcpy_s(data, length + 1, other.data);
+        }
+        return *this;
+    }
+
+                                    // Оператор обьединения
+    String operator+(const String& other) const
+    {
+        String newString;
+        newString.length = length + other.length;
+        newString.data = new char[newString.length + 1];
+        strcpy_s(newString.data, length + 1, data);
+        strcpy_s(newString.data + length, other.length + 1, other.data);
+        return newString;
+    }
+
+                                         // Оператор выходного потока
+    friend ostream& operator<<(ostream& os, const String& str)
+    {
+        if (str.data) {
+            os << str.data;
+        }
+        return os;
+    }
+};
+
+
 void main() 
 {
-    
-    Fraction f1(1, 2);
-    Fraction f2(1, 3);
-    cout << f1 << " + " << f2 << " = " << f1 + f2 << endl;
-    
+    setlocale(LC_ALL, "");
+    Fraction A;
+    cout << "Введите простую дробь: "; cin >> A;
+    cout << A << endl;
+
+    String str1 = "ООП";
+    String str2 = "ООП2";
+    String str3 = str1 + str2;
+    cout << str3 << endl;
+
 }
