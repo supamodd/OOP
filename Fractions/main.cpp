@@ -1,7 +1,10 @@
-﻿#include <iostream>
+﻿#define _CRT_SECURE_NO_WARNINGS  // Чтобы strtok не выдавал предупреждения
+#include <iostream>
 #include <numeric>
 #include <algorithm>
 #include <string>
+#include <sstream>
+#define delimiter "---------------------------------"
 
 using namespace std;
 
@@ -185,8 +188,7 @@ public:
         return !(*this < other);
     }
 
-    
-    friend istream& operator>>(istream& is, Fraction& fraction)
+   /* friend istream& operator>>(istream& is, Fraction& fraction)
     {
         char slash;
         is >> fraction.numerator >> slash >> fraction.denominator;
@@ -196,7 +198,7 @@ public:
         }
         fraction.reduce();
         return is;
-    }
+    }*/
 
     friend ostream& operator<<(ostream& os, const Fraction& fraction) 
     {
@@ -262,13 +264,55 @@ public:
                                          // Оператор выходного потока
     friend ostream& operator<<(ostream& os, const String& str)
     {
-        if (str.data) {
+        if (str.data) 
+        {
             os << str.data;
         }
         return os;
     }
+
+    
 };
 
+std::istream& operator>>(std::istream& is, Fraction& obj)
+{
+    const int SIZE = 32;
+    char sz_input[SIZE] = {};   //sz_ - String Zero
+    //is >> sz_input;
+    is.getline(sz_input, SIZE); //Ввод строки с пробелами
+    //cout << sz_input << endl;
+    const char delimiters[] = { '/', ',', '(', ')', '.', ' ', 0 };
+    int numbers[3] = {};
+    int n = 0;
+    for (char* pch = strtok(sz_input, delimiters);pch;pch = strtok(NULL, delimiters))
+        numbers[n++] = atoi(pch);
+   /* for (char* pch = strtok(sz_input, delimiters); pch && n < 3; pch = strtok(NULL, deliminters))
+        numbers[n++] = atoi(pch);*/
+
+    //for (int i = 0; i < n; i++)cout << numbers[i] << "\t"; cout << endl;
+
+    switch (n)
+    {
+    case 1:obj = numbers[0]; break;
+    case 2:obj = Fraction(numbers[0], numbers[1]); break;
+    case 3:obj = Fraction(numbers[0], numbers[1], numbers[2]); break;
+    }
+    return is;
+}
+/*
+------------------------------
+Функция strtok() разбивает строку на токены.
+Разделители (delimiters) - это символы, по которым нужно делить строку
+Токены(tokens) - это элементы, которые нужно достать ( это все что НЕ разделители);
+При поиске разделителей, стрток разделяет строку.
+Стрток находит не за один вызов, а за последовательность вызовов. При чем входная строка (сз_инпут, передается только при первом вызове
+в след вызовах в кач. 1го параметра передается NULL. Если при последующих вызывах передавать входную строку,
+то стрток начинает поиск сначала.
+Функция стрток() возвращает указатель на найденный тоекн, если токен не найдет, то функция возвращает 'nullptr'
+pch - Pointer to Character, содержит указатель на первый символ токена.
+------------------------------
+Функция atoi() ASCII to Integer, принимает строку ASCII-символов, и возвращает целое число, соответствующее этой строке.
+*/
 
 void main() 
 {
@@ -276,10 +320,14 @@ void main()
     Fraction A;
     cout << "Введите простую дробь: "; cin >> A;
     cout << A << endl;
+    cout << delimiter << endl;
 
     String str1 = "ООП";
     String str2 = "ООП2";
     String str3 = str1 + str2;
     cout << str3 << endl;
+    cout << delimiter << endl;
 
+    cout << (Fraction(1, 2) >= Fraction(5, 6)) << endl;
+    cout << delimiter << endl;
 }
