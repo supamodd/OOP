@@ -14,7 +14,7 @@ namespace OOP
             //point.SetX(2);
             //point.SetY(3);
             //point.Print();
-
+            
             point1.X = 7;
             point1.Y = 8;
             Console.WriteLine($"Первая точка: X = {point1.X}, Y = {point1.Y}");
